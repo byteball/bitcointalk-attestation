@@ -1,0 +1,32 @@
+{
+  "name": "byteball-bitcointalk-attestation-bot",
+  "version": "1.0.0",
+  "description": "A bot that attests the user's bitcointalk accounts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temikng/byteball-bitcointalk-attestation-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/temikng/byteball-bitcointalk-attestation-bot/issues"
+  },
+  "homepage": "https://github.com/temikng/byteball-bitcointalk-attestation-bot#readme",
+  "dependencies": {
+    "byteball-witness": "git+https://github.com/byteball/byteball-witness.git",
+    "byteballcore": "git+https://github.com/byteball/byteballcore.git",
+    "cheerio": "1.0.0-rc.2",
+    "crypto": "1.0.1",
+    "headless-byteball": "git+https://github.com/byteball/headless-byteball.git"
+  },
+  "devDependencies": {
+    "eslint": "5.7.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.14.0"
+  }
+}
