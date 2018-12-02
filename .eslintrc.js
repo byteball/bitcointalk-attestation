@@ -14,5 +14,12 @@ module.exports = exports = {
     'global-require': 'off',
     'no-use-before-define': 'off',
     'no-param-reassign': 'off',
+    'linebreak-style': 'off',
+    'max-len': ['error', { 'code': 120 }],
+    'no-restricted-syntax': 'off',
+    'no-continue': 'off',
+    'no-prototype-builtins': 'off',
+    'quote-props': 'off',
+    'no-plusplus': 'off',
   }
 };

@@ -2,4 +2,5 @@
 .npm
 node_modules
 tmp
+test.js
 package-lock.json

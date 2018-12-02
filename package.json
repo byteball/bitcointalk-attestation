@@ -4,6 +4,7 @@
   "description": "A bot that attests the user's bitcointalk accounts",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,11 +19,15 @@
   },
   "homepage": "https://github.com/temikng/byteball-bitcointalk-attestation-bot#readme",
   "dependencies": {
+    "body-parser": "1.18.3",
     "byteball-witness": "git+https://github.com/byteball/byteball-witness.git",
     "byteballcore": "git+https://github.com/byteball/byteballcore.git",
     "cheerio": "1.0.0-rc.2",
+    "cookie-parser": "1.4.3",
     "crypto": "1.0.1",
-    "headless-byteball": "git+https://github.com/byteball/headless-byteball.git"
+    "express": "4.16.4",
+    "headless-byteball": "git+https://github.com/byteball/headless-byteball.git",
+    "request": "2.88.0"
   },
   "devDependencies": {
     "eslint": "5.7.0",

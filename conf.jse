@@ -6,12 +6,12 @@ exports.bLight = false;
 exports.storage = 'sqlite';
 
 // TOR is recommended. If you don't run TOR, please comment the next two lines
-// exports.socksHost = '127.0.0.1';
-// exports.socksPort = 9050;
+exports.socksHost = '127.0.0.1';
+exports.socksPort = 9050;
 
 exports.hub = 'byteball.org/bb';
 exports.deviceName = 'Steem attestation bot';
-exports.permanent_pairing_secret = '0000';
+exports.permanent_pairing_secret = '*';
 exports.control_addresses = [''];
 exports.payout_address = 'WHERE THE MONEY CAN BE SENT TO';
 
@@ -34,26 +34,14 @@ exports.bAcceptUnconfirmedPayments = true;
 
 exports.MAX_REFERRAL_DEPTH = 5;
 
-// Ranks: Brand New, Newbie, Jr. Member, Member, Full Member, Sr. Member, Hero Member, Legendary
-// Sub-Ranks: Donator, VIP
-// Staff Ranks: Staff, Moderator, Global Moderator, Administrator, Founder
-exports.listRankRewardsInUsd = {
-  'Brand New': 0.025,
-  'Newbie': 0.05,
-  'Jr. Member': 0.075,
-  'Member': 0.1,
-  'Full Member': 0.125,
-  'Sr. Member': 0.15,
-  'Hero Member': 0.175,
-  'Legendary': 0.175,
-  'Donator': 0.2,
-  'VIP': 0.225,
-  'Staff': 0.25,
-  'Moderator': 0.275,
-  'Global Moderator': 0.3,
-  'Administrator': 0.4,
-  'Founder': 0.5,
-};
+exports.listRankRewardsInUsd = [
+  { threshold: 25, rewardInUsd: 0.02 },
+  { threshold: 35, rewardInUsd: 5 },
+  { threshold: 45, rewardInUsd: 10 },
+  { threshold: 50, rewardInUsd: 20 },
+  { threshold: 60, rewardInUsd: 80 },
+  { threshold: 70, rewardInUsd: 160 },
+];
 
 exports.signingRewardShare = 1;
 
@@ -63,14 +51,12 @@ exports.referralRewardContractShare = 0.75;
 exports.contractTerm = 1; // years
 exports.contractUnclaimedTerm = 2; // years
 
-// isTestnet ? 'OPNUXBRSSQQGHKQNEPD2GLWQYEUY5XLD' : 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT'
-exports.TIMESTAMPER_ADDRESS = 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT';
+exports.TIMESTAMPER_ADDRESS = 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT'; // isTestnet ? 'OPNUXBRSSQQGHKQNEPD2GLWQYEUY5XLD' : 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT'
 
-exports.admin = {
-  isActive: true,
-  deviceAddresses: [],
-};
+exports.site = 'https://steem-byteball.org';
 
-exports.webSiteUrl = 'https://bitcointalk-byteball.org';
+// steemconnect
+exports.steemconnectApp = 'byteballapp';
+exports.steemconnectRedirectUrl = exports.site + '/done';
 
 exports.webPort = 8080;
