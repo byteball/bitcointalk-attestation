@@ -27,7 +27,8 @@
     "crypto": "1.0.1",
     "express": "4.16.4",
     "headless-byteball": "git+https://github.com/byteball/headless-byteball.git",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "socks-proxy-agent": "4.0.1"
   },
   "devDependencies": {
     "eslint": "5.7.0",

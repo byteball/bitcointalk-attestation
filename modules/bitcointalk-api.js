@@ -1,5 +1,6 @@
 const conf = require('byteballcore/conf');
 const request = require('request');
+const SocksProxyAgent = require('socks-proxy-agent');
 const cheerio = require('cheerio');
 
 const regexp = /https:\/\/bitcointalk\.org\/index\.php\?.*(?:u=(.+);).*/g;
@@ -201,7 +202,7 @@ function getJQueryResponse(url) {
 
 function requestResponseAsync(url) {
   return new Promise((resolve, reject) => {
-    request(url, (error, response, body) => {
+    makeRequest(url, (error, response, body) => {
       if (error) {
         return reject(error);
       }
@@ -209,4 +210,32 @@ function requestResponseAsync(url) {
       resolve(body);
     });
   });
+}
+
+function makeRequest(endpoint, cb) {
+  const opts = getRequestOptions(endpoint);
+  request(opts, cb);
+}
+
+function getRequestOptions(endpoint) {
+  if (conf.socksHost) {
+    // SOCKS proxy to connect to
+    const proxy = `socks://${conf.socksHost}:${conf.socksPort}`;
+
+    // HTTP uri for the proxy to connect to
+    const opts = {
+      uri: endpoint,
+    };
+    
+    // create an instance of the `SocksProxyAgent` class with the proxy server information
+    // NOTE: the `true` second argument! Means to use TLS encryption on the socket
+    const agent = new SocksProxyAgent(proxy, true);
+    opts.agent = agent;
+
+    return opts;
+  }
+
+  return {
+    uri: endpoint,
+  };
 }
