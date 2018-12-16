@@ -89,7 +89,7 @@ exports.insertBitcointalkProfileLink = () => {
 	].join('');
 };
 
-exports.gointToAttestProfile = (profileId) => {
+exports.goingToAttestProfile = (profileId) => {
 	return [
 		`Thanks, going to attest your profile id: ${profileId}`,
 	].join('');
@@ -196,6 +196,17 @@ exports.referredUserBonus = (
 	return text;
 };
 
+exports.listOfReferrals = (rows) => {
+	if (!rows.length) {
+		return 'Referrals are not found.';
+	}
+	return [
+		'There are referrals:',
+		rows.map((row) => {
+			return `\n- ${row.profile_name}(${row.profile_id})`;
+		}),
+	];
+}
 
 /**
  * errors initialize bot

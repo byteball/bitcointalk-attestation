@@ -328,7 +328,7 @@ function handleTransactionsBecameStable(arrUnits) {
 function respond(fromAddress, text, response = '') {
 	const device = require('byteballcore/device.js');
 
-	checkAdminRespond(fromAddress, text, response, (adminAnswer) => {
+	handleAdminRequest(fromAddress, text, response, (adminAnswer) => {
 		if (adminAnswer) {
 			return device.sendMessageToDevice(fromAddress, 'text', messageNewLine(response) + adminAnswer);
 		}
@@ -357,7 +357,7 @@ function respond(fromAddress, text, response = '') {
 				const profileId = api.checkProfileUserId(text);
 				if (profileId) {
 					userInfo.profile_id = profileId;
-					response += texts.gointToAttestProfile(profileId);
+					response += texts.goingToAttestProfile(profileId);
 					return db.query(
 						'UPDATE users SET profile_id=? WHERE device_address=? AND user_address=?',
 						[profileId, fromAddress, userInfo.user_address],
@@ -539,7 +539,7 @@ function respond(fromAddress, text, response = '') {
 	});
 }
 
-function checkAdminRespond(fromAddress, text, response, onDone) {
+function handleAdminRequest(fromAddress, text, response, onDone) {
 	if (!conf.admin.isActive) {
 		return onDone();
 	}
@@ -598,7 +598,7 @@ function checkAdminRespond(fromAddress, text, response, onDone) {
 					return onDone();
 				}
 
-				return texts.test(rows);
+				return onDone(texts.listOfReferrals(rows));
 			},
 		);
 	}
