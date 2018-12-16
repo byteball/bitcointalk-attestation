@@ -21,5 +21,7 @@ module.exports = exports = {
     'no-prototype-builtins': 'off',
     'quote-props': 'off',
     'no-plusplus': 'off',
+    'indent': 'off',
+    'no-tabs': 'off',
   }
 };

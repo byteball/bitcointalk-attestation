@@ -3,4 +3,5 @@
 node_modules
 tmp
 test.js
+conf.jse
 package-lock.json

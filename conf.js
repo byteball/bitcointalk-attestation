@@ -38,21 +38,21 @@ exports.MAX_REFERRAL_DEPTH = 5;
 // Sub-Ranks: Donator, VIP
 // Staff Ranks: Staff, Moderator, Global Moderator, Administrator, Founder
 exports.listRankRewardsInUsd = {
-  'Brand New': 0.025,
-  'Newbie': 0.05,
-  'Jr. Member': 0.075,
-  'Member': 0.1,
-  'Full Member': 0.125,
-  'Sr. Member': 0.15,
-  'Hero Member': 0.175,
-  'Legendary': 0.175,
-  'Donator': 0.2,
-  'VIP': 0.225,
-  'Staff': 0.25,
-  'Moderator': 0.275,
-  'Global Moderator': 0.3,
-  'Administrator': 0.4,
-  'Founder': 0.5,
+	'Brand New': 0.025,
+	'Newbie': 0.05,
+	'Jr. Member': 0.075,
+	'Member': 0.1,
+	'Full Member': 0.125,
+	'Sr. Member': 0.15,
+	'Hero Member': 0.175,
+	'Legendary': 0.175,
+	'Donator': 0.2,
+	'VIP': 0.225,
+	'Staff': 0.25,
+	'Moderator': 0.275,
+	'Global Moderator': 0.3,
+	'Administrator': 0.4,
+	'Founder': 0.5,
 };
 
 exports.signingRewardShare = 1;
@@ -67,8 +67,8 @@ exports.contractUnclaimedTerm = 2; // years
 exports.TIMESTAMPER_ADDRESS = 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT';
 
 exports.admin = {
-  isActive: true,
-  deviceAddresses: [],
+	isActive: true,
+	deviceAddresses: [],
 };
 
 exports.webSiteUrl = 'https://bitcointalk-byteball.org';
