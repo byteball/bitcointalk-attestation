@@ -54,7 +54,9 @@ exports.getProfileData = (userId, bbAddress) => {
 
 			const link = exports.getLoginURL(bbAddress);
 			if (!checkLink(tableRows, link)) {
-				throw new Error(`link ${link} not found`);
+				return {
+					isLinkCorrect: false,
+				};
 			}
 
 			const name = rowsGetValueByKey(tableRows, 'name');
@@ -81,7 +83,9 @@ exports.getProfileData = (userId, bbAddress) => {
 			if (rankIndex < 0) {
 				throw new Error(`undefined rank: ${rank}, ${userId}`);
 			}
-			const data = {};
+			const data = {
+				isLinkCorrect: true,
+			};
 
 			data.name = name;
 			data.rank = rank;

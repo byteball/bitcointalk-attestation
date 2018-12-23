@@ -48,9 +48,12 @@ function startWebServer() {
 				}
 
 				const device = require('byteballcore/device.js');
+
 				api.getProfileData(profileId, params.bbAddress)
 					.then((profileData) => {
-						console.error('profileData', profileData);
+						if (!profileData.isLinkCorrect) {
+							return device.sendMessageToDevice(deviceAddress, 'text', "Your bitcointalk profile doesn't contain a correct link");
+						}
 
 						receivingAddresses.readOrAssign(userInfo, (receivingAddress, postPublicly) => {
 							db.query(
