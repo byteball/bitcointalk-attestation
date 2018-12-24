@@ -1,7 +1,7 @@
 CREATE TABLE users (
 	device_address CHAR(33) NOT NULL PRIMARY KEY,
 	user_address CHAR(32) NULL,
-	profile_id VARCHAR(64) NULL,
+	bt_user_id VARCHAR(64) NULL, -- bt === bitcointalk
 	creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (device_address) REFERENCES correspondent_devices(device_address)
 );
@@ -10,23 +10,23 @@ CREATE TABLE receiving_addresses (
 	receiving_address CHAR(32) NOT NULL PRIMARY KEY,
 	device_address CHAR(33) NOT NULL,
 	user_address CHAR(32) NOT NULL,
-	profile_id VARCHAR(64) NOT NULL,
-	profile_name VARCHAR(25) NULL,
-	profile_rank VARCHAR(18) NULL,
-	profile_rank_index TINYINT NULL,
-    profile_activity INT NULL,
-    profile_posts INT NULL,
+	bt_user_id VARCHAR(64) NOT NULL,
+	bt_user_name VARCHAR(25) NULL,
+	bt_user_rank VARCHAR(18) NULL,
+	bt_user_rank_index TINYINT NULL,
+	bt_user_activity INT NULL,
+	bt_user_posts INT NULL,
 	creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	post_publicly TINYINT NULL,
 	price INT NULL,
 	last_price_date TIMESTAMP NULL,
-	UNIQUE (device_address, user_address, profile_id),
+	UNIQUE (device_address, user_address, bt_user_id),
 	FOREIGN KEY (device_address) REFERENCES correspondent_devices(device_address),
 	FOREIGN KEY (receiving_address) REFERENCES my_addresses(address)
 );
 CREATE INDEX byReceivingAddress ON receiving_addresses(receiving_address);
 CREATE INDEX ra_byUserAddress ON receiving_addresses(user_address);
-CREATE INDEX byProfileId ON receiving_addresses(profile_id);
+CREATE INDEX byProfileId ON receiving_addresses(bt_user_id);
 
 CREATE TABLE transactions (
 	transaction_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -102,7 +102,7 @@ CREATE TABLE reward_units (
 	transaction_id INTEGER NOT NULL PRIMARY KEY,
 	device_address CHAR(33) NOT NULL UNIQUE,
 	user_address CHAR(32) NOT NULL UNIQUE,
-	profile_id CHAR(44) NOT NULL UNIQUE,
+	user_id CHAR(44) NOT NULL UNIQUE,
 	reward INT NOT NULL,
 	contract_reward INT NOT NULL,
 	reward_unit CHAR(44) NULL UNIQUE,
@@ -115,13 +115,13 @@ CREATE TABLE referral_reward_units (
 	transaction_id INTEGER NOT NULL PRIMARY KEY,
 	user_address CHAR(32) NOT NULL,
 	new_user_address CHAR(44) NOT NULL UNIQUE,
-	profile_id CHAR(44) NOT NULL,
-	new_profile_id CHAR(44) NOT NULL UNIQUE,
+	user_id CHAR(44) NOT NULL,
+	new_user_id CHAR(44) NOT NULL UNIQUE,
 	reward INT NOT NULL,
 	contract_reward INT NOT NULL,
 	reward_unit CHAR(44) NULL UNIQUE,
 	reward_date TIMESTAMP NULL,
 	FOREIGN KEY (transaction_id) REFERENCES transactions(transaction_id),
-	FOREIGN KEY (new_profile_id) REFERENCES reward_units(profile_id),
+	FOREIGN KEY (new_user_id) REFERENCES reward_units(user_id),
 	FOREIGN KEY (reward_unit) REFERENCES units(unit)
 );

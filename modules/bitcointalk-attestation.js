@@ -11,9 +11,9 @@ function retryPostingAttestations() {
 	db.query(
 		`SELECT
 			transaction_id, user_address,
-			profile_id, profile_name,
-			profile_rank, profile_rank_index,
-			profile_activity, profile_posts,
+			bt_user_id, bt_user_name,
+			bt_user_rank, bt_user_rank_index,
+			bt_user_activity, bt_user_posts,
 			post_publicly
 		FROM attestation_units
 		JOIN transactions USING(transaction_id)
@@ -21,17 +21,17 @@ function retryPostingAttestations() {
 		WHERE attestation_unit IS NULL`,
 		(rows) => {
 			rows.forEach((row) => {
-				if (row.profile_rank === null) {
+				if (row.bt_user_rank === null) {
 					throw Error(`no rep in tx ${row.transaction_id}`);
 				}
 				const [attestation, srcProfile] = getAttestationPayloadAndSrcProfile(
 					row.user_address,
-					row.profile_id,
-					row.profile_name,
-					row.profile_rank,
-					row.profile_rank_index,
-					row.profile_activity,
-					row.profile_posts,
+					row.bt_user_id,
+					row.bt_user_name,
+					row.bt_user_rank,
+					row.bt_user_rank_index,
+					row.bt_user_activity,
+					row.bt_user_posts,
 					row.post_publicly,
 				);
 				// eslint-disable-next-line no-console
@@ -76,7 +76,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 						() => {
 							const device = require('byteballcore/device.js');
 							let text = [
-								`Now your bitcointalk profile id ${srcProfile.profile_name} is attested, `,
+								`Now your bitcointalk username ${srcProfile.bt_user_name} is attested, `,
 								`see the attestation unit: https://explorer.byteball.org/#${unit}`,
 							];
 
@@ -163,21 +163,21 @@ function postAttestation(attestorAddress, payload, onDone) {
 
 function getProfileId(profile) {
 	return objectHash.getBase64Hash([profile, conf.salt]);
-}
+
 
 function getAttestationPayloadAndSrcProfile(
 	userAddress, profileId, profileName, profileRank, profileRankIndex, profileActivity, profilePosts, bPublic,
 ) {
 	const profile = {
-		bitcointalk_profile_id: profileId,
-		name: profileName,
-		rank: profileRank,
-		rank_index: profileRankIndex,
-		activity: profileActivity,
-		posts: profilePosts,
+		bitcointalk_id: profileId,
+		bitcointalk_username: profileName,
+		bitcointalk_rank: profileRank,
+		bitcointalk_rank_index: profileRankIndex,
+		bitcointalk_activity: profileActivity,
+		bitcointalk_posts: profilePosts,
 	};
 	if (bPublic) {
-		profile.profile_id = getProfileId(profile);
+		profile.user_id = getProfileId(profile);
 		const attestation = {
 			address: userAddress,
 			profile,
@@ -212,7 +212,7 @@ function hideProfile(profile) {
 	const profileId = getProfileId(profile);
 	const publicProfile = {
 		profile_hash: profileHash,
-		profile_id: profileId,
+		user_id: profileId,
 	};
 	return [publicProfile, srcProfile];
 }

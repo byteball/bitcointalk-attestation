@@ -168,7 +168,7 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 		}
 		db.query(
 			`SELECT 
-				address, user_address, device_address, profile_id, payload, app
+				address, user_address, device_address, bt_user_id, payload, app
 			FROM attestations
 			JOIN messages USING(unit, message_index)
 			JOIN attestation_units ON unit=attestation_unit
@@ -186,7 +186,7 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 				}
 
 				let maxMci = 0;
-				let bestProfileId;
+				let bestUserId;
 				let bestRow;
 				rows.forEach((row) => {
 					if (row.app !== 'attestation') {
@@ -201,19 +201,19 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 						throw Error(`different addresses: address ${row.address}, payload ${row.payload} for payment ${paymentUnit}`);
 					}
 
-					const profileId = payload.profile.profile_id;
-					if (!profileId) {
-						throw Error(`no profile_id for payment ${paymentUnit}`);
+					const userId = payload.profile.user_id;
+					if (!userId) {
+						throw Error(`no user_id for payment ${paymentUnit}`);
 					}
 
 					const mci = assocMcisByAddress[row.address];
 					if (mci > maxMci) {
 						maxMci = mci;
 						bestRow = row;
-						bestProfileId = profileId;
+						bestUserId = userId;
 					}
 				});
-				if (!bestRow || !bestProfileId) {
+				if (!bestRow || !bestUserId) {
 					throw Error(`no best for payment ${paymentUnit}`);
 				}
 
@@ -222,7 +222,7 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 					console.log(`findReferrer ${paymentUnit}: self-referring`);
 					return tryToFindLinkReferrer();
 				}
-				handleReferrer(bestProfileId, bestRow.user_address, bestRow.device_address, bestRow.profile_id);
+				handleReferrer(bestUserId, bestRow.user_address, bestRow.device_address, bestRow.bt_user_id);
 			},
 		);
 	}
@@ -233,7 +233,7 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 			`SELECT
 				referring_user_address, payload, app, type,
 				receiving_addresses.device_address,
-				receiving_addresses.user_address, receiving_addresses.profile_id
+				receiving_addresses.user_address, receiving_addresses.bt_user_id
 			FROM link_referrals 
 			CROSS JOIN attestations ON referring_user_address=attestations.address AND attestor_address=?
 			CROSS JOIN messages USING(unit, message_index)
@@ -261,11 +261,11 @@ function findReferrer(paymentUnit, userAddress, deviceAddress, handleReferrer) {
 				if (payload.address !== row.referring_user_address) {
 					throw Error(`different addresses: referring_user_address ${row.referring_user_address}, payload ${row.payload} for device ${deviceAddress}`);
 				}
-				const referringProfileId = payload.profile.profile_id;
+				const referringProfileId = payload.profile.user_id;
 				if (!referringProfileId) {
 					throw Error(`no proflie id for device ${deviceAddress} payload ${row.payload}`);
 				}
-				handleReferrer(referringProfileId, row.referring_user_address, row.device_address, row.profile_id);
+				handleReferrer(referringProfileId, row.referring_user_address, row.device_address, row.bt_user_id);
 			},
 		);
 	}

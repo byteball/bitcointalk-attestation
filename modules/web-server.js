@@ -20,8 +20,8 @@ function startWebServer() {
 		const { params, cookies } = req;
 		db.query(
 			`SELECT
-				device_address, user_address, users.profile_id,
-				receiving_addresses.profile_name
+				device_address, user_address, users.bt_user_id,
+				receiving_addresses.bt_user_name
 			FROM users
 			LEFT JOIN receiving_addresses USING(device_address, user_address)
 			WHERE user_address=?`,
@@ -32,7 +32,7 @@ function startWebServer() {
 				}
 
 				const userInfo = rows[0];
-				const { profile_id: profileId, user_address: userAddress, device_address: deviceAddress } = userInfo;
+				const { bt_user_id: btUserId, user_address: userAddress, device_address: deviceAddress } = userInfo;
 				if (cookies.referrer && validationUtils.isValidAddress(cookies.referrer)) {
 					db.query(
 						`INSERT ${db.getIgnore()} INTO link_referrals
@@ -49,7 +49,7 @@ function startWebServer() {
 
 				const device = require('byteballcore/device.js');
 
-				api.getProfileData(profileId, params.bbAddress)
+				api.getProfileData(btUserId, params.bbAddress)
 					.then((profileData) => {
 						if (!profileData.isLinkCorrect) {
 							return device.sendMessageToDevice(deviceAddress, 'text', "Your bitcointalk profile doesn't contain a correct link");
@@ -59,11 +59,11 @@ function startWebServer() {
 							db.query(
 								`UPDATE receiving_addresses
 								SET
-									profile_name=?,
-									profile_rank=?,
-									profile_rank_index=?,
-									profile_activity=?,
-									profile_posts=?
+									bt_user_name=?,
+									bt_user_rank=?,
+									bt_user_rank_index=?,
+									bt_user_activity=?,
+									bt_user_posts=?
 								WHERE receiving_address=?`,
 								[
 									profileData.name,
@@ -75,8 +75,8 @@ function startWebServer() {
 								],
 							);
 	
-							let response = `Your bitcointalk profile name is ${profileData.name}.\n\n`;
-							const challenge = `${profileId} ${userAddress}`;
+							let response = `Your bitcointalk username is ${profileData.name}.\n\n`;
+							const challenge = `${btUserId} ${userAddress}`;
 							if (postPublicly === null) {
 								response += texts.privateOrPublic();
 							} else {
@@ -84,14 +84,14 @@ function startWebServer() {
 								response += '\n\n';
 								response += (postPublicly === 0)
 									? texts.privateChosen()
-									: texts.publicChosen(profileData.name, profileId);
+									: texts.publicChosen(profileData.name, btUserId);
 							}
 							device.sendMessageToDevice(deviceAddress, 'text', response);
 						});
 					})
 					.catch((error) => {
 						console.error(error); // eslint-disable-line no-console
-						notifications.notifyAdmin(`failed getProfileData ${profileId}`, `${error}, bbAddress: ${params.bbAddress}`);
+						notifications.notifyAdmin(`failed getProfileData ${btUserId}`, `${error}, bbAddress: ${params.bbAddress}`);
 						device.sendMessageToDevice(deviceAddress, 'text', 'Failed to get your bitcointalk profile! Please, try later!');
 					});
 

@@ -200,7 +200,7 @@ function handleNewTransactions(arrUnits) {
 	db.query(
 		`SELECT
 			amount, asset, unit,
-			receiving_address, device_address, user_address, profile_id, price, 
+			receiving_address, device_address, user_address, bt_user_id, price, 
 			${db.getUnixTimestamp('last_price_date')} AS price_ts
 		FROM outputs
 		CROSS JOIN receiving_addresses ON receiving_addresses.receiving_address = outputs.address
@@ -264,7 +264,7 @@ function checkPayment(row, onDone) {
 
 	if (row.amount < conf.priceInBytes) {
 		const text = `Received ${row.amount} Bytes from you, which is less than the expected ${conf.priceInBytes} Bytes.`;
-		const challenge = `${row.profile_id} ${row.user_address}`;
+		const challenge = `${row.bt_user_id} ${row.user_address}`;
 		return onDone(`${text}\n\n'${texts.pleasePay(row.receiving_address, conf.priceInBytes, challenge)}`);
 	}
 
@@ -294,9 +294,9 @@ function handleTransactionsBecameStable(arrUnits) {
 	db.query(
 		`SELECT
 			transaction_id, device_address, user_address,
-			profile_id, profile_name,
-			profile_rank, profile_rank_index,
-			profile_activity, profile_posts,
+			bt_user_id, bt_user_name,
+			bt_user_rank, bt_user_rank_index,
+			bt_user_activity, bt_user_posts,
 			post_publicly, payment_unit
 		FROM accepted_payments
 		JOIN receiving_addresses USING(receiving_address)
@@ -337,7 +337,7 @@ function respond(fromAddress, text, response = '') {
 			function checkUserAddress(onDone) {
 				if (validationUtils.isValidAddress(text)) {
 					userInfo.user_address = text;
-					userInfo.profile_id = null;
+					userInfo.bt_user_id = null;
 					response += texts.goingToAttestAddress(userInfo.user_address);
 					return db.query(
 						'UPDATE users SET user_address=? WHERE device_address=?',
@@ -356,24 +356,24 @@ function respond(fromAddress, text, response = '') {
 			function checkProfileId(onDone) {
 				const profileId = api.checkProfileUserId(text);
 				if (profileId) {
-					userInfo.profile_id = profileId;
+					userInfo.bt_user_id = profileId;
 					response += texts.goingToAttestProfile(profileId);
 					return db.query(
-						'UPDATE users SET profile_id=? WHERE device_address=? AND user_address=?',
+						'UPDATE users SET bt_user_id=? WHERE device_address=? AND user_address=?',
 						[profileId, fromAddress, userInfo.user_address],
 						() => {
 							onDone();
 						},
 					);
 				}
-				if (userInfo.profile_id) {
+				if (userInfo.bt_user_id) {
 					return onDone();
 				}
 				onDone(texts.insertBitcointalkProfileLink());
 			}
 
 			function checkProfileName(onDone) {
-				if (userInfo.profile_name) {
+				if (userInfo.user_name) {
 					return onDone();
 				}
 				const link = api.getLoginURL(userInfo.user_address);
@@ -403,10 +403,10 @@ function respond(fromAddress, text, response = '') {
 								db.query(
 									`UPDATE receiving_addresses 
 									SET post_publicly=? 
-									WHERE device_address=? AND user_address=? AND profile_id=?`,
-									[postPublicly, fromAddress, userInfo.user_address, userInfo.profile_id],
+									WHERE device_address=? AND user_address=? AND bt_user_id=?`,
+									[postPublicly, fromAddress, userInfo.user_address, userInfo.bt_user_id],
 								);
-								response += (text === 'private') ? texts.privateChosen() : texts.publicChosen(userInfo.profile_name, userInfo.profile_id);
+								response += (text === 'private') ? texts.privateChosen() : texts.publicChosen(userInfo.user_name, userInfo.bt_user_id);
 							}
 
 							if (postPublicly === null) {
@@ -418,7 +418,7 @@ function respond(fromAddress, text, response = '') {
 							}
 
 							// handle signed message
-							const challenge = `${userInfo.profile_id} ${userInfo.user_address}`;
+							const challenge = `${userInfo.bt_user_id} ${userInfo.user_address}`;
 							const arrSignedMessageMatches = text.match(/\(signed-message:(.+?)\)/);
 							if (arrSignedMessageMatches) {
 								const signedMessageBase64 = arrSignedMessageMatches[1];
@@ -466,9 +466,9 @@ function respond(fromAddress, text, response = '') {
 															db.query(
 																`SELECT
 																	device_address, user_address,
-																	profile_id, profile_name,
-																	profile_rank, profile_rank_index,
-																	profile_activity, profile_posts,
+																	bt_user_id, bt_user_name,
+																	bt_user_rank, bt_user_rank_index,
+																	bt_user_activity, bt_user_posts,
 																	post_publicly
 																FROM receiving_addresses
 																WHERE receiving_address=?`,
@@ -557,7 +557,7 @@ function handleAdminRequest(fromAddress, text, response, onDone) {
 		let query;
 		if (validationUtils.isValidAddress(data)) {
 			query = `SELECT
-				profile_name, profile_id
+				bt_user_name, bt_user_id
 			FROM receiving_addresses
 			JOIN link_referrals ON link_referrals.referring_user_address=receiving_addresses.user_address
 			WHERE
@@ -574,7 +574,7 @@ function handleAdminRequest(fromAddress, text, response, onDone) {
 				)`;
 		} else {
 			query = `SELECT
-				profile_name, profile_id
+				bt_user_name, bt_user_id
 			FROM receiving_addresses
 			JOIN link_referrals ON link_referrals.referring_user_address=receiving_addresses.user_address
 			WHERE
@@ -587,7 +587,7 @@ function handleAdminRequest(fromAddress, text, response, onDone) {
 					JOIN accepted_payments USING(transaction_id, receiving_address)
 					WHERE
 						accepted_payments.is_confirmed=1
-						AND receiving_addresses.profile_name=?
+						AND receiving_addresses.bt_user_name=?
 				)`;
 		}
 		return db.query(
@@ -622,7 +622,7 @@ function readUserInfo(deviceAddress, callback) {
 	db.query(
 		`SELECT
 			users.user_address, users.device_address,
-			users.profile_id, receiving_addresses.profile_name
+			users.bt_user_id, receiving_addresses.bt_user_name
 		FROM users
 		LEFT JOIN receiving_addresses USING(device_address, user_address)
 		WHERE device_address=?`,
@@ -648,7 +648,7 @@ function attest(row, proofType) {
 	const device = require('byteballcore/device.js');
 	const mutex = require('byteballcore/mutex.js');
 	const transactionId = row.transaction_id;
-	if (row.profile_rank === null) {
+	if (row.bt_user_rank === null) {
 		throw Error(`attest: no rank in tx ${transactionId}`);
 	}
 	mutex.lock([`tx-${transactionId}`], (unlock) => {
@@ -658,12 +658,12 @@ function attest(row, proofType) {
 			() => {
 				const [attestation, srcProfile] = bitcointalkAttestation.getAttestationPayloadAndSrcProfile(
 					row.user_address,
-					row.profile_id,
-					row.profile_name,
-					row.profile_rank,
-					row.profile_rank_index,
-					row.profile_activity,
-					row.profile_posts,
+					row.bt_user_id,
+					row.bt_user_name,
+					row.bt_user_rank,
+					row.bt_user_rank_index,
+					row.bt_user_activity,
+					row.bt_user_posts,
 					row.post_publicly,
 				);
 
@@ -674,7 +674,7 @@ function attest(row, proofType) {
 					srcProfile,
 				);
 
-				let rewardInUSD = getRewardInUSDByRank(row.profile_rank);
+				let rewardInUSD = getRewardInUSDByRank(row.bt_user_rank);
 				if (!rewardInUSD) {
 					return unlock();
 				}
@@ -687,13 +687,13 @@ function attest(row, proofType) {
 				const contractRewardInBytes = Math.round(fullRewardInBytes * (1 - conf.rewardContractShare));
 				db.query(
 					`INSERT ${db.getIgnore()} INTO reward_units
-					(transaction_id, device_address, user_address, profile_id, reward, contract_reward)
+					(transaction_id, device_address, user_address, user_id, reward, contract_reward)
 					VALUES (?, ?,?,?,?, ?,?)`,
-					[transactionId, row.device_address, row.user_address, attestation.profile.profile_id, rewardInBytes, contractRewardInBytes],
+					[transactionId, row.device_address, row.user_address, attestation.profile.user_id, rewardInBytes, contractRewardInBytes],
 					async (res) => {
 						console.error(`reward_units insertId: ${res.insertId}, affectedRows: ${res.affectedRows}`);
 						if (!res.affectedRows) {
-							console.log(`duplicate user_address or profile_id: ${row.user_address}, ${attestation.profile.profile_id}`);
+							console.log(`duplicate user_address or user_id: ${row.user_address}, ${attestation.profile.user_id}`);
 							return unlock();
 						}
 						
@@ -701,11 +701,11 @@ function attest(row, proofType) {
 						device.sendMessageToDevice(
 							row.device_address,
 							'text',
-							texts.attestedFirstTimeBonus(rewardInUSD, rewardInBytes, contractRewardInBytes, vestingTs, row.profile_name, row.profile_id),
+							texts.attestedFirstTimeBonus(rewardInUSD, rewardInBytes, contractRewardInBytes, vestingTs, row.bt_user_name, row.bt_user_id),
 						);
 						reward.sendAndWriteReward('attestation', transactionId);
 
-						const referralRewardInUSD = getRewardInUSDByRank(row.profile_rank);
+						const referralRewardInUSD = getRewardInUSDByRank(row.bt_user_rank);
 						if (!referralRewardInUSD) {
 							return unlock();
 						}
@@ -714,7 +714,7 @@ function attest(row, proofType) {
 						const contractReferralRewardInBytes = conversion.getPriceInBytes(referralRewardInUSD * conf.referralRewardContractShare);
 						reward.findReferrer(
 							row.payment_unit, row.user_address, row.device_address,
-							async (referringProfileId, referringUserAddress, referringUserDeviceAddress) => {
+							async (referringUserId, referringUserAddress, referringUserDeviceAddress) => {
 								if (!referringUserAddress) {
 									// console.error("no referring user for " + row.user_address);
 									console.log(`no referring user for ${row.user_address}`);
@@ -725,17 +725,17 @@ function attest(row, proofType) {
 
 								db.query(
 									`INSERT ${db.getIgnore()} INTO referral_reward_units
-									(transaction_id, user_address, profile_id, new_user_address, new_profile_id, reward, contract_reward)
+									(transaction_id, user_address, user_id, new_user_address, new_user_id, reward, contract_reward)
 									VALUES (?, ?,?, ?,?, ?,?)`,
 									[
-										transactionId, referringUserAddress, referringProfileId,
-										row.user_address, attestation.profile.profile_id,
+										transactionId, referringUserAddress, referringUserId,
+										row.user_address, attestation.profile.user_id,
 										referralRewardInBytes, contractReferralRewardInBytes,
 									],
 									(res) => {
 										console.log(`referral_reward_units insertId: ${res.insertId}, affectedRows: ${res.affectedRows}`);
 										if (!res.affectedRows) {
-											notifications.notifyAdmin('duplicate referral reward', `referral reward for new user ${row.user_address} ${attestation.profile.profile_id} already written`);
+											notifications.notifyAdmin('duplicate referral reward', `referral reward for new user ${row.user_address} ${attestation.profile.user_id} already written`);
 											return unlock();
 										}
 
@@ -744,7 +744,7 @@ function attest(row, proofType) {
 											'text',
 											texts.referredUserBonus(
 												referralRewardInUSD, referralRewardInBytes, contractReferralRewardInBytes, referrerVestingDateTs,
-												row.profile_name, row.profile_id,
+												row.bt_user_name, row.bt_user_id,
 											),
 										);
 										reward.sendAndWriteReward('referral', transactionId);

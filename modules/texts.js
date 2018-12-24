@@ -89,9 +89,9 @@ exports.insertBitcointalkProfileLink = () => {
 	].join('');
 };
 
-exports.goingToAttestProfile = (profileId) => {
+exports.goingToAttestProfile = (btUserId) => {
 	return [
-		`Thanks, going to attest your profile id: ${profileId}`,
+		`Thanks, going to attest your bitcointalk profile id: ${btUserId}`,
 	].join('');
 };
 
@@ -118,9 +118,9 @@ exports.privateChosen = () => {
 	].join('');
 };
 
-exports.publicChosen = (profileName, profileId) => {
+exports.publicChosen = (btUserName, btUserId) => {
 	return [
-		`Your bitcointalk profile ${profileName}(${profileId}) will be posted into the public database `,
+		`Your bitcointalk profile ${btUserName}(${btUserId}) will be posted into the public database `,
 		'and will be visible to everyone. You cannot remove it later.\n\n',
 		'Click [private](command:private) now if you changed your mind.',
 	].join('');
@@ -171,11 +171,11 @@ exports.paymentIsConfirmed = () => {
 
 
 exports.attestedFirstTimeBonus = (
-	rewardInUSD, rewardInBytes, contractRewardInBytes, vestingTs, profileName, profileId,
+	rewardInUSD, rewardInBytes, contractRewardInBytes, vestingTs, btUserName, btUserId,
 ) => {
 	const contractRewardInUSD = rewardInUSD * conf.rewardContractShare;
 	const cashRewardInUSD = rewardInUSD - contractRewardInUSD;
-	let text = `You attested your bitcointalk profile ${profileName}(${profileId}) for the first time and will receive a welcome bonus of $${cashRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(rewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
+	let text = `You attested your bitcointalk profile ${btUserName}(${btUserId}) for the first time and will receive a welcome bonus of $${cashRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(rewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
 	if (contractRewardInBytes) {
 		text += ` You will also receive a reward of $${contractRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(contractRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) that will be locked on a smart contract for ${conf.contractTerm} year and can be spent only after ${new Date(vestingTs).toDateString()}.`;
 	}
@@ -184,11 +184,11 @@ exports.attestedFirstTimeBonus = (
 
 exports.referredUserBonus = (
 	referralRewardInUSD, referralRewardInBytes, contractReferralRewardInBytes, referrerVestingDateTs,
-	profileName, profileId,
+	btUserName, btUserId,
 ) => {
 	const contractReferralRewardInUSD = referralRewardInUSD * conf.referralRewardContractShare;
 	const cashReferralRewardInUSD = referralRewardInUSD - contractReferralRewardInUSD;
-	let text = `You referred user ${profileName}(${profileId}) who has just verified his bitcointalk profile name and you will receive a reward of $${cashReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(referralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
+	let text = `You referred user ${btUserName}(${btUserId}) who has just verified his bitcointalk profile name and you will receive a reward of $${cashReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(referralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
 	if (contractReferralRewardInBytes) {
 		text += `  You will also receive a reward of $${contractReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(contractReferralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) that will be locked on a smart contract for ${conf.contractTerm} year and can be spent only after ${new Date(referrerVestingDateTs).toDateString()}.`;
 	}
@@ -196,6 +196,9 @@ exports.referredUserBonus = (
 	return text;
 };
 
+/**
+ * admin responces
+ */
 exports.listOfReferrals = (rows) => {
 	if (!rows.length) {
 		return 'Referrals are not found.';
@@ -203,10 +206,10 @@ exports.listOfReferrals = (rows) => {
 	return [
 		'There are referrals:',
 		rows.map((row) => {
-			return `\n- ${row.profile_name}(${row.profile_id})`;
+			return `\n- ${row.bt_user_name}(${row.bt_user_id})`;
 		}),
 	];
-}
+};
 
 /**
  * errors initialize bot
