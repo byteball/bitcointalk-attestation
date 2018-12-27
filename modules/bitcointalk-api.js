@@ -3,7 +3,7 @@ const request = require('request');
 const SocksProxyAgent = require('socks-proxy-agent');
 const cheerio = require('cheerio');
 
-const regexp = /https:\/\/bitcointalk\.org\/index\.php\?.*(?:u=(.+);).*/g;
+const regexpUrlUserId = /https:\/\/bitcointalk\.org\/index\.php\?.*(?:u=(.+);).*/g;
 const arrRanks = Object.keys(conf.listRankRewardsInUsd)
 	.map((rank) => rank.toLowerCase());
 
@@ -20,13 +20,13 @@ function StructureChangedError(message, userId) {
 StructureChangedError.prototype = Object.create(Error.prototype);
 StructureChangedError.prototype.constructor = StructureChangedError;
 
-exports.checkProfileUserId = (text) => {
-	const res = regexp.exec(text);
+exports.checkUrlUserId = (text) => {
+	const res = regexpUrlUserId.exec(text);
 	if (!res || res.length < 2) {
 		return;
 	}
 
-	console.log(' api checkProfileUserId', text); // eslint-disable-line no-console
+	console.log(' api checkUrlUserId', text); // eslint-disable-line no-console
 	const userId = Number(res[1]);
 	if (Number.isNaN(userId) || !userId) {
 		return;

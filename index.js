@@ -353,8 +353,8 @@ function respond(fromAddress, text, response = '') {
 				onDone(texts.insertMyAddress());
 			}
 
-			function checkProfileId(onDone) {
-				const profileId = api.checkProfileUserId(text);
+			function checkUserId(onDone) {
+				const profileId = api.checkUrlUserId(text);
 				if (profileId) {
 					userInfo.bt_user_id = profileId;
 					response += texts.goingToAttestProfile(profileId);
@@ -385,7 +385,7 @@ function respond(fromAddress, text, response = '') {
 					return device.sendMessageToDevice(fromAddress, 'text', messageNewLine(response) + userAddressResponse);
 				}
 
-				checkProfileId((profileIdResponse) => {
+				checkUserId((profileIdResponse) => {
 					if (profileIdResponse) {
 						return device.sendMessageToDevice(fromAddress, 'text', messageNewLine(response) + profileIdResponse);
 					}
