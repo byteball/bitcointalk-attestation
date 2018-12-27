@@ -41,7 +41,7 @@ exports.greeting = () => {
 
 exports.weHaveReferralProgram = (userAddress) => {
 	const inviteCode = `byteball:${device.getMyDevicePubKey()}@${conf.hub}#${userAddress}`;
-	const qrUrl = `${conf.site}/qr/?code=${encodeURIComponent(inviteCode)}`;
+	const qrUrl = `${conf.webSiteUrl}/qr/?code=${encodeURIComponent(inviteCode)}`;
 	return [
 		'Remember, we have a referral program: you get rewards by recommending new users to link their ',
 		`Bitcointalk and Byteball accounts. There are ${(conf.bAllowProofByPayment ? 4 : 3)} ways to do it `,
@@ -61,7 +61,7 @@ exports.weHaveReferralProgram = (userAddress) => {
 		`${inviteCode}, which opens this attestation bot in the user's wallet, the wallet has to be already installed;\n`,
 
 		'➡ have new users click this link (you can publish it e.g. on your blog) ',
-		`${conf.site}/#${userAddress} which sets a tracking cookie and redirects to wallet download.\n\n`,
+		`${conf.webSiteUrl}/#${userAddress} which sets a tracking cookie and redirects to wallet download.\n\n`,
 
 		"Your reward is exactly same as the new user's reward. ",
 		'25% of your reward will be immediately available, ',
