@@ -1,7 +1,7 @@
 CREATE TABLE users (
 	device_address CHAR(33) NOT NULL PRIMARY KEY,
 	user_address CHAR(32) NULL,
-	bt_user_id VARCHAR(64) NULL, -- bt === bitcointalk
+	bt_user_id INT NULL, -- bt === bitcointalk
 	creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (device_address) REFERENCES correspondent_devices(device_address)
 );
@@ -10,7 +10,7 @@ CREATE TABLE receiving_addresses (
 	receiving_address CHAR(32) NOT NULL PRIMARY KEY,
 	device_address CHAR(33) NOT NULL,
 	user_address CHAR(32) NOT NULL,
-	bt_user_id VARCHAR(64) NOT NULL,
+	bt_user_id INT NOT NULL,
 	bt_user_name VARCHAR(25) NULL,
 	bt_user_rank VARCHAR(18) NULL,
 	bt_user_rank_index TINYINT NULL,
