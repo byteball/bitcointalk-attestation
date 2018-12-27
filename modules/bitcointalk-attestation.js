@@ -26,13 +26,8 @@ function retryPostingAttestations() {
 				}
 				const [attestation, srcProfile] = getAttestationPayloadAndSrcProfile(
 					row.user_address,
-					row.bt_user_id,
-					row.bt_user_name,
-					row.bt_user_rank,
-					row.bt_user_rank_index,
-					row.bt_user_activity,
-					row.bt_user_posts,
 					row.post_publicly,
+					row,
 				);
 				// eslint-disable-next-line no-console
 				console.log(`retryPostingAttestations: ${row.transaction_id} ${row.post_publicly}`);
@@ -163,18 +158,16 @@ function postAttestation(attestorAddress, payload, onDone) {
 
 function getProfileId(profile) {
 	return objectHash.getBase64Hash([profile, conf.salt]);
+}
 
-
-function getAttestationPayloadAndSrcProfile(
-	userAddress, profileId, profileName, profileRank, profileRankIndex, profileActivity, profilePosts, bPublic,
-) {
+function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 	const profile = {
-		bitcointalk_id: profileId,
-		bitcointalk_username: profileName,
-		bitcointalk_rank: profileRank,
-		bitcointalk_rank_index: profileRankIndex,
-		bitcointalk_activity: profileActivity,
-		bitcointalk_posts: profilePosts,
+		bitcointalk_id: btUserData.bt_user_id,
+		bitcointalk_username: btUserData.bt_user_name,
+		bitcointalk_rank: btUserData.bt_user_rank,
+		bitcointalk_rank_index: btUserData.bt_user_rank_index,
+		bitcointalk_activity: btUserData.bt_user_activity,
+		bitcointalk_posts: btUserData.bt_user_posts,
 	};
 	if (bPublic) {
 		profile.user_id = getProfileId(profile);

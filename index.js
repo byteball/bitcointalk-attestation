@@ -658,13 +658,8 @@ function attest(row, proofType) {
 			() => {
 				const [attestation, srcProfile] = bitcointalkAttestation.getAttestationPayloadAndSrcProfile(
 					row.user_address,
-					row.bt_user_id,
-					row.bt_user_name,
-					row.bt_user_rank,
-					row.bt_user_rank_index,
-					row.bt_user_activity,
-					row.bt_user_posts,
 					row.post_publicly,
+					row,
 				);
 
 				bitcointalkAttestation.postAndWriteAttestation(
