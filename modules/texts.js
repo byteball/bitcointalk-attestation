@@ -62,7 +62,7 @@ exports.weHaveReferralProgram = (userAddress) => {
 		`${inviteCode}, which opens this attestation bot in the user's wallet, the wallet has to be already installed;\n`,
 
 		'➡ have new users click this link (you can publish it e.g. on your blog) ',
-		`${conf.webSiteUrl}/#${userAddress} which sets a tracking cookie and redirects to wallet download.\n\n`,
+		`${conf.webSiteUrl}/${userAddress} which sets a tracking cookie and redirects to wallet download.\n\n`,
 
 		"Your reward is exactly same as the new user's reward. ",
 		`${100 - referralRewardContractShareInPercent}% of your reward will be immediately available, `,

@@ -49,20 +49,22 @@ function startWebServer() {
 				function checkUserAttestation(onDone) {
 					db.query(
 						`SELECT
-							is_confirmed
+							attestation_date
 						FROM receiving_addresses
 						JOIN transactions USING(receiving_address)
 						JOIN accepted_payments USING(transaction_id, receiving_address)
+						JOIN attestation_units USING(transaction_id)
 						WHERE receiving_addresses.user_address=?
-							AND receiving_addresses.bt_user_id=?`,
+							AND receiving_addresses.bt_user_id=?
+							AND is_confirmed=1`,
 						[userAddress, btUserId],
 						(rows) => {
-							if (!rows.length) {
+							if (!rows || !rows.length) {
 								return onDone(false);
 							}
 
 							const row = rows[0];
-							onDone(!!row.is_confirmed);
+							onDone(!!row.attestation_date);
 						},
 					);
 				}
