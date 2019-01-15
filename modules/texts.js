@@ -128,11 +128,11 @@ exports.publicChosen = (btUserName, btUserId) => {
 	].join('');
 };
 
-exports.pleasePay = (receivingAddress, price, challenge) => {
+exports.pleasePay = (receivingAddress, price, userAddress, challenge) => {
 	if (conf.bAllowProofByPayment) {
 		return [
 			'Please pay for the attestation: ',
-			`[attestation payment](byteball:${receivingAddress}?amount=${price}).\n\n`,
+			`[attestation payment](byteball:${receivingAddress}?amount=${price}&single_address=single${userAddress}).\n\n`,
 			'Alternatively, you can prove ownership of your address by signing a message: ',
 			`[message](sign-message-request:${challenge})`,
 			
@@ -148,10 +148,10 @@ exports.pleasePay = (receivingAddress, price, challenge) => {
 	return `Please prove ownership of your address by signing a message: [message](sign-message-request:${challenge}).`;
 };
 
-exports.pleasePayOrPrivacy = (receivingAddress, price, challenge, postPublicly) => {
+exports.pleasePayOrPrivacy = (receivingAddress, price, userAddress, challenge, postPublicly) => {
 	return (postPublicly === null)
 		? exports.privateOrPublic()
-		: exports.pleasePay(receivingAddress, price, challenge);
+		: exports.pleasePay(receivingAddress, price, userAddress, challenge);
 };
 
 

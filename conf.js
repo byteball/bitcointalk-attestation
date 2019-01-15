@@ -10,7 +10,7 @@ exports.storage = 'sqlite';
 // exports.socksPort = 9050;
 
 exports.hub = 'byteball.org/bb';
-exports.deviceName = 'Steem attestation bot';
+exports.deviceName = 'Bitcointalk attestation bot';
 exports.permanent_pairing_secret = '0000';
 exports.control_addresses = [''];
 exports.payout_address = 'WHERE THE MONEY CAN BE SENT TO';

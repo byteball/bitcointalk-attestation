@@ -265,7 +265,7 @@ function checkPayment(row, onDone) {
 	if (row.amount < conf.priceInBytes) {
 		const text = `Received ${row.amount} Bytes from you, which is less than the expected ${conf.priceInBytes} Bytes.`;
 		const challenge = `${row.bt_user_id} ${row.user_address}`;
-		return onDone(`${text}\n\n'${texts.pleasePay(row.receiving_address, conf.priceInBytes, challenge)}`);
+		return onDone(`${text}\n\n'${texts.pleasePay(row.receiving_address, conf.priceInBytes, row.user_address, challenge)}`);
 	}
 
 	function resetUserAddress() {
@@ -373,7 +373,7 @@ function respond(fromAddress, text, response = '') {
 			}
 
 			function checkProfileName(onDone) {
-				if (userInfo.user_name) {
+				if (userInfo.bt_user_name) {
 					return onDone();
 				}
 				const link = api.getLoginURL(userInfo.user_address);
@@ -406,7 +406,7 @@ function respond(fromAddress, text, response = '') {
 									WHERE device_address=? AND user_address=? AND bt_user_id=?`,
 									[postPublicly, fromAddress, userInfo.user_address, userInfo.bt_user_id],
 								);
-								response += (text === 'private') ? texts.privateChosen() : texts.publicChosen(userInfo.user_name, userInfo.bt_user_id);
+								response += (text === 'private') ? texts.privateChosen() : texts.publicChosen(userInfo.bt_user_name, userInfo.bt_user_id);
 							}
 
 							if (postPublicly === null) {
@@ -508,7 +508,7 @@ function respond(fromAddress, text, response = '') {
 										return device.sendMessageToDevice(
 											fromAddress,
 											'text',
-											messageNewLine(response) + texts.pleasePayOrPrivacy(receivingAddress, price, challenge, postPublicly),
+											messageNewLine(response) + texts.pleasePayOrPrivacy(receivingAddress, price, userInfo.user_address, challenge, postPublicly),
 										);
 									}
 
