@@ -173,7 +173,7 @@ function moveFundsToAttestorAddresses() {
 				const headlessWallet = require('headless-byteball');
 				headlessWallet.sendMultiPayment({
 					asset: null,
-					to_address: bitcointalkAttestation.steemAttestorAddress,
+					to_address: bitcointalkAttestation.bitcointalkAttestorAddress,
 					send_all: true,
 					paying_addresses: arrAddresses,
 				}, (err, unit) => {
@@ -521,6 +521,14 @@ function respond(fromAddress, text, response = '') {
 											fromAddress,
 											'text',
 											messageNewLine(response) + texts.receivedYourPayment(row.received_amount),
+										);
+									}
+
+									if (!row.attestation_date) {
+										return device.sendMessageToDevice(
+											fromAddress,
+											'text',
+											messageNewLine(response) + texts.inAttestation(),
 										);
 									}
 									

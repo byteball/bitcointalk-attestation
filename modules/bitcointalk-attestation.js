@@ -71,7 +71,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 						() => {
 							const device = require('byteballcore/device.js');
 							let text = [
-								`Now your bitcointalk username ${srcProfile.bt_user_name} is attested, `,
+								`Now your bitcointalk username ${srcProfile.bitcointalk_username}(${srcProfile.bitcointalk_id}) is attested, `,
 								`see the attestation unit: https://explorer.byteball.org/#${unit}`,
 							];
 

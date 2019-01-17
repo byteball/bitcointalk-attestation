@@ -163,8 +163,12 @@ exports.receivedYourPayment = (amount) => {
 	return `Received your payment of ${amount / 1e9} GB, waiting for confirmation. It should take 5-15 minutes.`;
 };
 
-exports.alreadAttested = () => {
-	return 'You are already attested.';
+exports.inAttestation = () => {
+	return 'Your payment was confirmed. You are in attestation. Please, wait.';
+};
+
+exports.alreadyAttested = (attestationDate) => {
+	return `You were already attested at ${attestationDate} UTC. Attest [again](command: again)?`;
 };
 
 exports.paymentIsConfirmed = () => {

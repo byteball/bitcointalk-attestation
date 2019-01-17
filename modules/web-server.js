@@ -47,6 +47,15 @@ function startWebServer() {
 			return responseRedirect(res);
 		}
 
+		if (cookies.referrer && validationUtils.isValidAddress(cookies.referrer)) {
+			db.query(
+				`INSERT ${db.getIgnore()} INTO link_referrals
+				(referring_user_address, device_address, type)
+				VALUES(?, ?, 'cookie')`,
+				[cookies.referrer, deviceAddress],
+			);
+		}
+
 		async function checkUserAttestation() {
 			const rows = await db.query(
 				`SELECT 1
@@ -61,15 +70,6 @@ function startWebServer() {
 		if (isAttested) {
 			res.cookie('referrer', bbAddress, 3 * 365);
 			return responseRedirect(res);
-		}
-
-		if (cookies.referrer && validationUtils.isValidAddress(cookies.referrer)) {
-			db.query(
-				`INSERT ${db.getIgnore()} INTO link_referrals
-				(referring_user_address, device_address, type)
-				VALUES(?, ?, 'cookie')`,
-				[cookies.referrer, deviceAddress],
-			);
 		}
 		
 		try {
