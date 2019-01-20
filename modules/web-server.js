@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const api = require('./bitcointalk-api');
+const bitcointalkAttestation = require('./bitcointalk-attestation');
 const notifications = require('./notifications');
 const texts = require('./texts');
 const receivingAddresses = require('./receiving-addresses');
@@ -60,8 +61,8 @@ function startWebServer() {
 			const rows = await db.query(
 				`SELECT 1
 				FROM attestations
-				WHERE address=?`,
-				[userAddress],
+				WHERE address=? AND attestor_address=?`,
+				[userAddress, bitcointalkAttestation.bitcointalkAttestorAddress],
 			);
 			return (rows && rows.length);
 		}
