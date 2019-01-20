@@ -6,6 +6,7 @@ const conf = require('byteballcore/conf');
  * responses for clients
  */
 exports.greeting = () => {
+	const referralRewardContractShareInPercent = conf.referralRewardContractShare * 100;
 	const rewards = Object.keys(conf.listRankRewardsInUsd)
 		.map((rank) => {
 			return [
@@ -34,8 +35,9 @@ exports.greeting = () => {
 
 		`${rewards}\n\n`,
 
-		'Half of the reward will be immediately available, ',
-		'the other half will be locked on a smart contract and can be spent after 1 year.',
+		`${100 - referralRewardContractShareInPercent}% of the reward will be immediately available, `,
+		`the other ${referralRewardContractShareInPercent}% will be locked on a smart contract `,
+		`and can be spent after ${conf.contractTerm} ${conf.contractTerm === 1 ? 'year' : 'years'}.`,
 	].join('');
 };
 
