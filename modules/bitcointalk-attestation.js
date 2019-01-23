@@ -157,7 +157,10 @@ function postAttestation(attestorAddress, payload, onDone) {
 }
 
 function getProfileId(profile) {
-	return objectHash.getBase64Hash([profile, conf.salt]);
+	const shortProfile = {
+		bitcointalk_id: profile.bitcointalk_id,
+	};
+	return objectHash.getBase64Hash([shortProfile, conf.salt]);
 }
 
 function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
