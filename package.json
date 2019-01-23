@@ -1,23 +1,23 @@
 {
-	"name": "byteball-bitcointalk-attestation-bot",
+	"name": "bitcointalk-attestation",
 	"version": "1.0.0",
-	"description": "A bot that attests the user's bitcointalk accounts",
+	"description": "A bot that attests the user's bitcointalk username",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js",
+		"start": "node attestation.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/temikng/byteball-bitcointalk-attestation-bot.git"
+		"url": "git+https://github.com/byteball/bitcointalk-attestation.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/temikng/byteball-bitcointalk-attestation-bot/issues"
+		"url": "https://github.com/byteball/bitcointalk-attestation/issues"
 	},
-	"homepage": "https://github.com/temikng/byteball-bitcointalk-attestation-bot#readme",
+	"homepage": "https://github.com/byteball/bitcointalk-attestation#readme",
 	"dependencies": {
 		"body-parser": "1.18.3",
 		"byteball-witness": "git+https://github.com/byteball/byteball-witness.git",
