@@ -20,13 +20,13 @@
 	"homepage": "https://github.com/byteball/bitcointalk-attestation#readme",
 	"dependencies": {
 		"body-parser": "1.18.3",
-		"byteball-witness": "git+https://github.com/byteball/byteball-witness.git",
-		"byteballcore": "git+https://github.com/byteball/byteballcore.git",
+		"obyte-witness": "git+https://github.com/byteball/obyte-witness.git",
+		"ocore": "git+https://github.com/byteball/ocore.git",
 		"cheerio": "1.0.0-rc.2",
 		"cookie-parser": "1.4.3",
 		"crypto": "1.0.1",
 		"express": "4.16.4",
-		"headless-byteball": "git+https://github.com/byteball/headless-byteball.git",
+		"headless-obyte": "git+https://github.com/byteball/headless-obyte.git",
 		"request": "2.88.0",
 		"socks-proxy-agent": "4.0.1"
 	},

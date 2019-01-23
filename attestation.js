@@ -1,8 +1,8 @@
-const constants = require('byteballcore/constants');
-const conf = require('byteballcore/conf');
-const db = require('byteballcore/db');
-const eventBus = require('byteballcore/event_bus');
-const validationUtils = require('byteballcore/validation_utils');
+const constants = require('ocore/constants');
+const conf = require('ocore/conf');
+const db = require('ocore/db');
+const eventBus = require('ocore/event_bus');
+const validationUtils = require('ocore/validation_utils');
 const texts = require('./modules/texts');
 const bitcointalkAttestation = require('./modules/bitcointalk-attestation');
 const api = require('./modules/bitcointalk-api');
@@ -51,12 +51,12 @@ eventBus.on('paired', (fromAddress, pairingSecret) => {
  * user sends message to the bot
  */
 eventBus.once('headless_and_rates_ready', () => { // we need rates to handle some messages
-	const headlessWallet = require('headless-byteball');
+	const headlessWallet = require('headless-obyte');
 	eventBus.on('text', (fromAddress, text) => {
 		respond(fromAddress, text.trim());
 	});
 	if (conf.bRunWitness) {
-		require('byteball-witness');
+		require('obyte-witness');
 		eventBus.emit('headless_wallet_ready');
 	} else {
 		headlessWallet.setupChatEventHandlers();
@@ -113,7 +113,7 @@ function handleWalletReady() {
 				throw new Error(error);
 			}
 
-			const headlessWallet = require('headless-byteball');
+			const headlessWallet = require('headless-obyte');
 			headlessWallet.issueOrSelectAddressByIndex(0, 0, (address1) => {
 				console.log(`== bitcointalk attestation address: ${address1}`); // eslint-disable-line no-console
 				bitcointalkAttestation.bitcointalkAttestorAddress = address1;
@@ -126,7 +126,7 @@ function handleWalletReady() {
 					setInterval(reward.retrySendingRewards, 60 * 1000);
 					setInterval(moveFundsToAttestorAddresses, 60 * 1000);
 
-					const consolidation = require('headless-byteball/consolidation.js');
+					const consolidation = require('headless-obyte/consolidation.js');
 					consolidation.scheduleConsolidation(
 						bitcointalkAttestation.bitcointalkAttestorAddress,
 						headlessWallet.signer,
@@ -142,8 +142,8 @@ function handleWalletReady() {
 }
 
 function moveFundsToAttestorAddresses() {
-	const network = require('byteballcore/network.js');
-	const mutex = require('byteballcore/mutex.js');
+	const network = require('ocore/network.js');
+	const mutex = require('ocore/mutex.js');
 	if (network.isCatchingUp()) {
 		return;
 	}
@@ -170,7 +170,7 @@ function moveFundsToAttestorAddresses() {
 				}
 
 				const arrAddresses = rows.map(row => row.receiving_address);
-				const headlessWallet = require('headless-byteball');
+				const headlessWallet = require('headless-obyte');
 				headlessWallet.sendMultiPayment({
 					asset: null,
 					to_address: bitcointalkAttestation.bitcointalkAttestorAddress,
@@ -179,7 +179,7 @@ function moveFundsToAttestorAddresses() {
 				}, (err, unit) => {
 					if (err) {
 						console.error('failed to move funds:', err); // eslint-disable-line no-console
-						const balances = require('byteballcore/balances');
+						const balances = require('ocore/balances');
 						balances.readBalance(arrAddresses[0], (balance) => {
 							console.error('balance', balance); // eslint-disable-line no-console
 							notifications.notifyAdmin('failed to move funds', `${err}, balance: ${JSON.stringify(balance)}`);
@@ -196,7 +196,7 @@ function moveFundsToAttestorAddresses() {
 }
 
 function handleNewTransactions(arrUnits) {
-	const device = require('byteballcore/device.js');
+	const device = require('ocore/device.js');
 	db.query(
 		`SELECT
 			amount, asset, unit,
@@ -290,7 +290,7 @@ function checkPayment(row, onDone) {
 }
 
 function handleTransactionsBecameStable(arrUnits) {
-	const device = require('byteballcore/device.js');
+	const device = require('ocore/device.js');
 	db.query(
 		`SELECT
 			transaction_id, device_address, user_address,
@@ -326,7 +326,7 @@ function handleTransactionsBecameStable(arrUnits) {
  * @param response
  */
 function respond(fromAddress, text, response = '') {
-	const device = require('byteballcore/device.js');
+	const device = require('ocore/device.js');
 
 	handleAdminRequest(fromAddress, text, response, (adminAnswer) => {
 		if (adminAnswer) {
@@ -422,7 +422,7 @@ function respond(fromAddress, text, response = '') {
 							const arrSignedMessageMatches = text.match(/\(signed-message:(.+?)\)/);
 							if (arrSignedMessageMatches) {
 								const signedMessageBase64 = arrSignedMessageMatches[1];
-								const validation = require('byteballcore/validation');
+								const validation = require('ocore/validation');
 								const signedMessageJson = Buffer.from(signedMessageBase64, 'base64').toString('utf8');
 								console.error(signedMessageJson); // eslint-disable-line no-console
 
@@ -653,8 +653,8 @@ function readUserInfo(deviceAddress, callback) {
 }
 
 function attest(row, proofType) {
-	const device = require('byteballcore/device.js');
-	const mutex = require('byteballcore/mutex.js');
+	const device = require('ocore/device.js');
+	const mutex = require('ocore/mutex.js');
 	const transactionId = row.transaction_id;
 	if (row.bt_user_rank === null) {
 		throw Error(`attest: no rank in tx ${transactionId}`);

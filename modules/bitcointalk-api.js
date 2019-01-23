@@ -1,4 +1,4 @@
-const conf = require('byteballcore/conf');
+const conf = require('ocore/conf');
 const request = require('request');
 const SocksProxyAgent = require('socks-proxy-agent');
 const cheerio = require('cheerio');

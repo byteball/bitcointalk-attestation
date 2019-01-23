@@ -1,6 +1,6 @@
-const conf = require('byteballcore/conf');
-const db = require('byteballcore/db');
-const validationUtils = require('byteballcore/validation_utils');
+const conf = require('ocore/conf');
+const db = require('ocore/db');
+const validationUtils = require('ocore/validation_utils');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -39,7 +39,7 @@ function startWebServer() {
 			return responseRedirect(res);
 		}
 
-		const device = require('byteballcore/device.js');
+		const device = require('ocore/device.js');
 		const userInfo = rows[0];
 		const { bt_user_id: btUserId, user_address: userAddress, device_address: deviceAddress } = userInfo;
 
@@ -132,7 +132,7 @@ function startWebServer() {
 }
 
 function responseRedirect(res) {
-	res.redirect('https://byteball.org');
+	res.redirect('https://obyte.org');
 }
 
 exports.start = startWebServer;

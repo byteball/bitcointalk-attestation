@@ -1,12 +1,12 @@
-const conf = require('byteballcore/conf');
-const db = require('byteballcore/db');
+const conf = require('ocore/conf');
+const db = require('ocore/db');
 const notifications = require('./notifications');
 const bitcointalkAttestation = require('./bitcointalk-attestation');
 
 exports.distributionAddress = null;
 
 function sendReward(outputs, deviceAddress, onDone) {
-	const headlessWallet = require('headless-byteball');
+	const headlessWallet = require('headless-obyte');
 	headlessWallet.sendMultiPayment({
 		asset: null,
 		base_outputs: outputs,
@@ -16,7 +16,7 @@ function sendReward(outputs, deviceAddress, onDone) {
 	}, (err, unit) => {
 		if (err) {
 			console.log(`failed to send reward: ${err}`);
-			const balances = require('byteballcore/balances');
+			const balances = require('ocore/balances');
 			balances.readOutputsBalance(exports.distributionAddress, (balance) => {
 				console.error(balance);
 				notifications.notifyAdmin('failed to send reward', `${err}, balance: ${JSON.stringify(balance)}`);
@@ -30,7 +30,7 @@ function sendReward(outputs, deviceAddress, onDone) {
 
 
 function sendAndWriteReward(rewardType, transactionId) {
-	const mutex = require('byteballcore/mutex.js');
+	const mutex = require('ocore/mutex.js');
 	let table;
 	let deviceAddressColumn;
 	if (rewardType === 'referral') {
@@ -90,7 +90,7 @@ function sendAndWriteReward(rewardType, transactionId) {
 						WHERE transaction_id=?`,
 						[unit, transactionId],
 						() => {
-							const device = require('byteballcore/device.js');
+							const device = require('ocore/device.js');
 							device.sendMessageToDevice(row.device_address, 'text', `Sent the ${rewardType} reward`);
 							unlock();
 						},

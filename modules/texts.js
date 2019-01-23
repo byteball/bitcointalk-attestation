@@ -1,6 +1,6 @@
-const desktopApp = require('byteballcore/desktop_app.js');
-const device = require('byteballcore/device.js');
-const conf = require('byteballcore/conf');
+const desktopApp = require('ocore/desktop_app.js');
+const device = require('ocore/device.js');
+const conf = require('ocore/conf');
 
 /**
  * responses for clients
@@ -19,7 +19,7 @@ exports.greeting = () => {
 	return [
 		'Here you can attest your bitcointalk profile.\n\n',
 
-		'Your bitcointalk profile will be linked to your Byteball address, the link can be either made public ',
+		'Your bitcointalk profile will be linked to your Obyte address, the link can be either made public ',
 		'(if you choose so) or saved privately in your wallet. ',
 		'In the latter case, only a proof of attestation will be posted publicly on the distributed ledger.\n\n',
 
@@ -47,7 +47,7 @@ exports.weHaveReferralProgram = (userAddress) => {
 	const referralRewardContractShareInPercent = conf.referralRewardContractShare * 100;
 	return [
 		'Remember, we have a referral program: you get rewards by recommending new users to link their ',
-		`Bitcointalk and Byteball accounts. There are ${(conf.bAllowProofByPayment ? 4 : 3)} ways to do it `,
+		`Bitcointalk and Obyte accounts. There are ${(conf.bAllowProofByPayment ? 4 : 3)} ways to do it `,
 		'and ensure that the referrals are tracked to you:\n',
 
 		conf.bAllowProofByPayment
@@ -183,7 +183,7 @@ exports.attestedFirstTimeBonus = (
 ) => {
 	const contractRewardInUSD = rewardInUSD * conf.rewardContractShare;
 	const cashRewardInUSD = rewardInUSD - contractRewardInUSD;
-	let text = `You attested your bitcointalk profile ${btUserName}(${btUserId}) for the first time and will receive a welcome bonus of $${cashRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(rewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
+	let text = `You attested your bitcointalk profile ${btUserName}(${btUserId}) for the first time and will receive a welcome bonus of $${cashRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(rewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Obyte distribution fund.`;
 	if (contractRewardInBytes) {
 		text += ` You will also receive a reward of $${contractRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(contractRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) that will be locked on a smart contract for ${conf.contractTerm} year and can be spent only after ${new Date(vestingTs).toDateString()}.`;
 	}
@@ -196,11 +196,11 @@ exports.referredUserBonus = (
 ) => {
 	const contractReferralRewardInUSD = referralRewardInUSD * conf.referralRewardContractShare;
 	const cashReferralRewardInUSD = referralRewardInUSD - contractReferralRewardInUSD;
-	let text = `You referred user ${btUserName}(${btUserId}) who has just verified his bitcointalk profile name and you will receive a reward of $${cashReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(referralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Byteball distribution fund.`;
+	let text = `You referred user ${btUserName}(${btUserId}) who has just verified his bitcointalk profile name and you will receive a reward of $${cashReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(referralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) from Obyte distribution fund.`;
 	if (contractReferralRewardInBytes) {
 		text += `  You will also receive a reward of $${contractReferralRewardInUSD.toLocaleString([], { minimumFractionDigits: 2 })} (${(contractReferralRewardInBytes / 1e9).toLocaleString([], { maximumFractionDigits: 9 })} GB) that will be locked on a smart contract for ${conf.contractTerm} year and can be spent only after ${new Date(referrerVestingDateTs).toDateString()}.`;
 	}
-	text += '\n\nThank you for bringing in a new byteballer, the value of the ecosystem grows with each new user!';
+	text += '\n\nThank you for bringing in a new obyter, the value of the ecosystem grows with each new user!';
 	return text;
 };
 

@@ -1,5 +1,5 @@
 const request = require('request');
-const eventBus = require('byteballcore/event_bus.js');
+const eventBus = require('ocore/event_bus.js');
 const notifications = require('./notifications');
 
 let GBYTE_BTC_rate;
@@ -15,7 +15,7 @@ function checkAllRatesUpdated() {
 		console.log('rates are ready', GBYTE_BTC_rate, BTC_USD_rate);
 		const $InBytes = getPriceInBytes(1);
 		console.log(`1$ = ${$InBytes} Byte = ${$InBytes / 1e9} GByte | at ${new Date()}`);
-		const headlessWallet = require('headless-byteball'); // start loading headless only when rates are ready
+		const headlessWallet = require('headless-obyte'); // start loading headless only when rates are ready
 		checkRatesAndHeadless();
 	}
 }

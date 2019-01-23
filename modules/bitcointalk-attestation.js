@@ -1,6 +1,6 @@
-const conf = require('byteballcore/conf');
-const objectHash = require('byteballcore/object_hash');
-const db = require('byteballcore/db');
+const conf = require('ocore/conf');
+const objectHash = require('ocore/object_hash');
+const db = require('ocore/db');
 const notifications = require('./notifications');
 const texts = require('./texts');
 
@@ -43,7 +43,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 	if (!callback) {
 		callback = function callbackFn() {};
 	}
-	const mutex = require('byteballcore/mutex.js');
+	const mutex = require('ocore/mutex.js');
 	mutex.lock([`tx-${transactionId}`], (unlock) => {
 		db.query(
 			`SELECT receiving_addresses.device_address, attestation_date, user_address
@@ -69,10 +69,10 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 						`UPDATE attestation_units SET attestation_unit=?, attestation_date=${db.getNow()} WHERE transaction_id=?`,
 						[unit, transactionId],
 						() => {
-							const device = require('byteballcore/device.js');
+							const device = require('ocore/device.js');
 							let text = [
 								`Now your bitcointalk username ${srcProfile.bitcointalk_username}(${srcProfile.bitcointalk_id}) is attested, `,
-								`see the attestation unit: https://explorer.byteball.org/#${unit}`,
+								`see the attestation unit: https://explorer.obyte.org/#${unit}`,
 							];
 
 							if (srcProfile) {
@@ -104,7 +104,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 function postAttestation(attestorAddress, payload, onDone) {
 	function onError(err) {
 		console.error(`attestation failed: ${err}`); // eslint-disable-line no-console
-		const balances = require('byteballcore/balances');
+		const balances = require('ocore/balances');
 		balances.readBalance(attestorAddress, (balance) => {
 			console.error('balance', balance); // eslint-disable-line no-console
 			notifications.notifyAdmin('attestation failed', `${err}, balance: ${JSON.stringify(balance)}`);
@@ -112,9 +112,9 @@ function postAttestation(attestorAddress, payload, onDone) {
 		onDone(err);
 	}
 
-	const network = require('byteballcore/network.js');
-	const composer = require('byteballcore/composer.js');
-	const headlessWallet = require('headless-byteball');
+	const network = require('ocore/network.js');
+	const composer = require('ocore/composer.js');
+	const headlessWallet = require('headless-obyte');
 	const objMessage = {
 		app: 'attestation',
 		payload_location: 'inline',
@@ -186,7 +186,7 @@ function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 }
 
 function hideProfile(profile) {
-	const composer = require('byteballcore/composer.js');
+	const composer = require('ocore/composer.js');
 	const hiddenProfile = {};
 	const srcProfile = {};
 

@@ -1,5 +1,5 @@
-const conf = require('byteballcore/conf');
-const db = require('byteballcore/db');
+const conf = require('ocore/conf');
+const db = require('ocore/db');
 
 /**
  * read or assign receiving address
@@ -7,7 +7,7 @@ const db = require('byteballcore/db');
  * @param callback
  */
 exports.readOrAssign = function readOrAssign(userInfo, callback) {
-	const mutex = require('byteballcore/mutex.js');
+	const mutex = require('ocore/mutex.js');
 	mutex.lock([userInfo.device_address], (unlock) => {
 		db.query(
 			`SELECT
@@ -22,7 +22,7 @@ exports.readOrAssign = function readOrAssign(userInfo, callback) {
 					return unlock();
 				}
 
-				const headlessWallet = require('headless-byteball');
+				const headlessWallet = require('headless-obyte');
 				headlessWallet.issueNextMainAddress((receivingAddress) => {
 					db.query(
 						`INSERT INTO receiving_addresses 

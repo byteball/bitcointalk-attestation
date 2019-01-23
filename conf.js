@@ -9,7 +9,7 @@ exports.storage = 'sqlite';
 // exports.socksHost = '127.0.0.1';
 // exports.socksPort = 9050;
 
-exports.hub = 'byteball.org/bb';
+exports.hub = 'obyte.org/bb';
 exports.deviceName = 'Bitcointalk attestation bot';
 exports.permanent_pairing_secret = '0000';
 exports.control_addresses = [''];
@@ -72,6 +72,6 @@ exports.admin = {
 	deviceAddresses: [],
 };
 
-exports.webSiteUrl = 'https://bitcointalk-byteball.org';
+exports.webSiteUrl = 'https://bitcointalk-obyte.org';
 
 exports.webPort = 8080;
