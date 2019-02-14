@@ -156,7 +156,7 @@ function postAttestation(attestorAddress, payload, onDone) {
 	composer.composeJoint(params);
 }
 
-function getProfileId(profile) {
+function getUserId(profile) {
 	const shortProfile = {
 		bitcointalk_id: profile.bitcointalk_id,
 	};
@@ -173,7 +173,7 @@ function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 		bitcointalk_posts: btUserData.bt_user_posts,
 	};
 	if (bPublic) {
-		profile.user_id = getProfileId(profile);
+		profile.user_id = getUserId(profile);
 		const attestation = {
 			address: userAddress,
 			profile,
@@ -205,7 +205,7 @@ function hideProfile(profile) {
 		srcProfile[field] = [value, blinding];
 	}
 	const profileHash = objectHash.getBase64Hash(hiddenProfile);
-	const profileId = getProfileId(profile);
+	const profileId = getUserId(profile);
 	const publicProfile = {
 		profile_hash: profileHash,
 		user_id: profileId,
