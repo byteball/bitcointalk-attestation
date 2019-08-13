@@ -1,3 +1,5 @@
+/*jslint node: true */
+"use strict";
 exports.port = null;
 // exports.myUrl = 'wss://mydomain.com/bb';
 exports.bServeAsHub = false;
@@ -9,7 +11,7 @@ exports.storage = 'sqlite';
 // exports.socksHost = '127.0.0.1';
 // exports.socksPort = 9050;
 
-exports.hub = 'obyte.org/bb';
+exports.hub = process.env.testnet ? 'obyte.org/bb-test' : 'obyte.org/bb';
 exports.deviceName = 'Bitcointalk attestation bot';
 exports.permanent_pairing_secret = '0000';
 exports.control_addresses = [''];
@@ -20,7 +22,15 @@ exports.bSingleAddress = false;
 exports.bStaticChangeAddress = true;
 exports.KEYS_FILENAME = 'keys.json';
 
-// emails
+// smtp https://github.com/byteball/ocore/blob/master/mail.js
+exports.smtpTransport = 'local'; // use 'local' for Unix Sendmail
+exports.smtpRelay = '';
+exports.smtpUser = '';
+exports.smtpPassword = '';
+exports.smtpSsl = null;
+exports.smtpPort = null;
+
+// email setup
 exports.admin_email = '';
 exports.from_email = '';
 
@@ -64,8 +74,7 @@ exports.referralRewardContractShare = 0.75;
 exports.contractTerm = 1; // years
 exports.contractUnclaimedTerm = 2; // years
 
-// isTestnet ? 'OPNUXBRSSQQGHKQNEPD2GLWQYEUY5XLD' : 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT'
-exports.TIMESTAMPER_ADDRESS = 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT';
+exports.TIMESTAMPER_ADDRESS = process.env.testnet ? 'OPNUXBRSSQQGHKQNEPD2GLWQYEUY5XLD' : 'I2ADHGP4HL6J37NQAD73J7E5SKFIXJOT';
 
 exports.admin = {
 	isActive: true,
