@@ -70,9 +70,10 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 						[unit, transactionId],
 						() => {
 							const device = require('ocore/device.js');
+							let explorer = (process.env.testnet ? 'https://testnetexplorer.obyte.org/#' : 'https://explorer.obyte.org/#');
 							let text = [
 								`Now your bitcointalk username ${srcProfile.bitcointalk_username}(${srcProfile.bitcointalk_id}) is attested, `,
-								`see the attestation unit: https://explorer.obyte.org/#${unit}`,
+								`see the attestation unit: ${explorer}${unit}`,
 							];
 
 							if (srcProfile) {
