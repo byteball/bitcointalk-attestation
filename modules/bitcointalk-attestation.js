@@ -1,8 +1,11 @@
 const conf = require('ocore/conf');
 const objectHash = require('ocore/object_hash');
 const db = require('ocore/db');
+const constants = require('ocore/constants');
 const notifications = require('./notifications');
 const texts = require('./texts');
+
+var bJsonBased = (constants.version !== constants.versionWithoutTimestamp);
 
 function retryPostingAttestations() {
 	if (!exports.bitcointalkAttestorAddress) {
@@ -79,7 +82,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 							if (srcProfile) {
 								const privateProfile = {
 									unit,
-									payload_hash: objectHash.getBase64Hash(attestationPayload),
+									payload_hash: objectHash.getBase64Hash(attestationPayload, bJsonBased),
 									src_profile: srcProfile,
 								};
 								const base64PrivateProfile = Buffer.from(JSON.stringify(privateProfile)).toString('base64');
@@ -119,7 +122,7 @@ function postAttestation(attestorAddress, payload, onDone) {
 	const objMessage = {
 		app: 'attestation',
 		payload_location: 'inline',
-		payload_hash: objectHash.getBase64Hash(payload),
+		payload_hash: objectHash.getBase64Hash(payload, bJsonBased),
 		payload,
 	};
 	const params = {
@@ -166,12 +169,12 @@ function getUserId(profile) {
 
 function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 	const profile = {
-		bitcointalk_id: btUserData.bt_user_id,
-		bitcointalk_username: btUserData.bt_user_name,
-		bitcointalk_rank: btUserData.bt_user_rank,
-		bitcointalk_rank_index: btUserData.bt_user_rank_index,
-		bitcointalk_activity: btUserData.bt_user_activity,
-		bitcointalk_posts: btUserData.bt_user_posts,
+		bitcointalk_id: String(btUserData.bt_user_id),
+		bitcointalk_username: String(btUserData.bt_user_name),
+		bitcointalk_rank: String(btUserData.bt_user_rank),
+		bitcointalk_rank_index: String(btUserData.bt_user_rank_index),
+		bitcointalk_activity: String(btUserData.bt_user_activity),
+		bitcointalk_posts: String(btUserData.bt_user_posts),
 	};
 	if (bPublic) {
 		profile.user_id = getUserId(profile);
@@ -201,11 +204,11 @@ function hideProfile(profile) {
 		const value = profile[field];
 		const blinding = composer.generateBlinding();
 		// console.error(`hideProfile: ${field}, ${value}, ${blinding}`);
-		const hiddenValue = objectHash.getBase64Hash([value, blinding]);
+		const hiddenValue = objectHash.getBase64Hash([value, blinding], bJsonBased);
 		hiddenProfile[field] = hiddenValue;
 		srcProfile[field] = [value, blinding];
 	}
-	const profileHash = objectHash.getBase64Hash(hiddenProfile);
+	const profileHash = objectHash.getBase64Hash(hiddenProfile, bJsonBased);
 	const profileId = getUserId(profile);
 	const publicProfile = {
 		profile_hash: profileHash,
