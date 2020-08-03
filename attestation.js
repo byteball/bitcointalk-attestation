@@ -2,7 +2,6 @@ const constants = require('ocore/constants');
 const conf = require('ocore/conf');
 const db = require('ocore/db');
 const eventBus = require('ocore/event_bus');
-const walletDefinedByAddresses = require('ocore/wallet_defined_by_addresses');
 const validationUtils = require('ocore/validation_utils');
 const texts = require('./modules/texts');
 const bitcointalkAttestation = require('./modules/bitcointalk-attestation');
@@ -382,6 +381,7 @@ function respond(fromAddress, text, response = '') {
 			}
 
 			if (text === 'resend') {
+				const walletDefinedByAddresses = require('ocore/wallet_defined_by_addresses');
 				walletDefinedByAddresses.sendToPeerAllSharedAddressesHavingUnspentOutputs(fromAddress, "base", {
 					ifFundedSharedAddress: function(numberOfContracts) {
 						device.sendMessageToDevice(fromAddress, "text",
@@ -692,6 +692,9 @@ function attest(row, proofType) {
 					bitcointalkAttestation.bitcointalkAttestorAddress,
 					attestation,
 					srcProfile,
+					function(err, attestation_unit) {
+						if (err) console.error(err);
+					}
 				);
 
 				let rewardInUSD = getRewardInUSDByRank(row.bt_user_rank);

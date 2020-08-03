@@ -27,16 +27,24 @@ function retryPostingAttestations() {
 				if (row.bt_user_rank === null) {
 					throw Error(`no rep in tx ${row.transaction_id}`);
 				}
+				// eslint-disable-next-line no-console
+				console.log(`retryPostingAttestations: ${row.transaction_id} ${row.post_publicly}`);
 				const [attestation, srcProfile] = getAttestationPayloadAndSrcProfile(
 					row.user_address,
 					row.post_publicly,
 					row,
 				);
-				// eslint-disable-next-line no-console
-				console.log(`retryPostingAttestations: ${row.transaction_id} ${row.post_publicly}`);
 				// console.error(attestation);
 				// console.error(srcProfile);
-				postAndWriteAttestation(row.transaction_id, exports.bitcointalkAttestorAddress, attestation, srcProfile);
+				postAndWriteAttestation(
+					row.transaction_id,
+					exports.bitcointalkAttestorAddress,
+					attestation,
+					srcProfile,
+					function(err, attestation_unit) {
+						if (err) console.error(err);
+					}
+				);
 			});
 		},
 	);
@@ -58,7 +66,7 @@ function postAndWriteAttestation(transactionId, attestorAddress, attestationPayl
 			(rows) => {
 				const row = rows[0];
 				if (row.attestation_date) { // already posted
-					callback(null, null);
+					callback('already posted');
 					return unlock();
 				}
 
@@ -169,8 +177,8 @@ function getUserId(profile) {
 
 function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 	const profile = {
-		bitcointalk_id: String(btUserData.bt_user_id),
 		bitcointalk_username: String(btUserData.bt_user_name),
+		bitcointalk_id: String(btUserData.bt_user_id),
 		bitcointalk_rank: String(btUserData.bt_user_rank),
 		bitcointalk_rank_index: String(btUserData.bt_user_rank_index),
 		bitcointalk_activity: String(btUserData.bt_user_activity),
