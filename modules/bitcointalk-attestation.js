@@ -177,7 +177,7 @@ function getUserId(profile) {
 
 function getAttestationPayloadAndSrcProfile(userAddress, bPublic, btUserData) {
 	const profile = {
-		bitcointalk_username: String(btUserData.bt_user_name),
+		bitcointalk_username: String(btUserData.bt_user_name).toLowerCase(),
 		bitcointalk_id: String(btUserData.bt_user_id),
 		bitcointalk_rank: String(btUserData.bt_user_rank),
 		bitcointalk_rank_index: String(btUserData.bt_user_rank_index),
