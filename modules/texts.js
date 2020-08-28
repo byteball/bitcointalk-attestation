@@ -1,6 +1,7 @@
 const desktopApp = require('ocore/desktop_app.js');
 const device = require('ocore/device.js');
 const conf = require('ocore/conf');
+const pairingProtocol = process.env.testnet ? 'obyte-tn:' : 'obyte:';
 
 /**
  * responses for clients
@@ -42,8 +43,8 @@ exports.greeting = () => {
 };
 
 exports.weHaveReferralProgram = (userAddress) => {
-	const inviteCode = `byteball:${device.getMyDevicePubKey()}@${conf.hub}#${userAddress}`;
-	const qrUrl = `${conf.webSiteUrl}/qr/?code=${encodeURIComponent(inviteCode)}`;
+	const inviteCode = `${device.getMyDevicePubKey()}@${conf.hub}#${userAddress}`;
+	const qrUrl = `${conf.webSiteUrl}/qr/?code=${encodeURIComponent(pairingProtocol+inviteCode)}`;
 	const referralRewardContractShareInPercent = conf.referralRewardContractShare * 100;
 	return [
 		'Remember, we have a referral program: you get rewards by recommending new users to link their ',
@@ -134,7 +135,7 @@ exports.pleasePay = (receivingAddress, price, userAddress, challenge) => {
 	if (conf.bAllowProofByPayment) {
 		return [
 			'Please pay for the attestation: ',
-			`[attestation payment](byteball:${receivingAddress}?amount=${price}&single_address=single${userAddress}).\n\n`,
+			`[attestation payment](${pairingProtocol}${receivingAddress}?amount=${price}&single_address=single${userAddress}).\n\n`,
 			'Alternatively, you can prove ownership of your address by signing a message: ',
 			`[message](sign-message-request:${challenge})`,
 			
