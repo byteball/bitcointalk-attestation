@@ -15,6 +15,7 @@ function startWebServer() {
 	const server = require('http').Server(app);
 
 	app.use(cookieParser());
+	app.use(express.static(__dirname + '/public'));
 	app.use(bodyParser.urlencoded({ extended: false }));
 
 	app.get('/:bbAddress', async (req, res) => {
